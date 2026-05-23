@@ -1,15 +1,22 @@
-@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@400;500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Montserrat:wght@400;500;600&display=swap");
 
 :root {
   --cor-fundo: #fbf9f6;
   --cor-card: #ffffff;
-  --cor-texto-principal: #271912;
-  --cor-texto-secundario: #000000;
+  --cor-texto-principal: #000000;
+  --cor-texto-secundario: #252321;
+  --cor-texto-terciario: #242323;
   --cor-destaque: #a0522d;
   --cor-destaque-hover: #8b4513;
-  --sombra-card: 0 5px 25px rgba(0, 0, 0, 0.05);
+  --cor-destaque-suave: #f5ede6;
+  --cor-borda: #ede8e3;
+  --sombra-card: 0 2px 12px rgba(39, 25, 18, 0.06);
+  --sombra-card-hover: 0 8px 32px rgba(39, 25, 18, 0.12);
   --fonte-titulo: "Playfair Display", serif;
   --fonte-corpo: "Montserrat", sans-serif;
+  --radius-card: 2px;
+  --radius-btn: 2px;
+  --transicao: 0.25s ease;
 }
 
 * {
@@ -28,24 +35,48 @@ body {
 }
 
 .hero {
-  background-color: transparent;
-  color: var(--cor-texto-principal);
   text-align: center;
-  padding: 6rem 1.5rem 5rem 1.5rem;
-  margin-bottom: 0;
+  padding: 7rem 1.5rem 5.5rem;
+  position: relative;
+}
+
+.hero::after {
+  content: "";
+  display: block;
+  width: 48px;
+  height: 1px;
+  background-color: var(--cor-destaque);
+  margin: 2.5rem auto 0;
+}
+
+.hero-eyebrow {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--cor-destaque);
+  margin-bottom: 1.25rem;
 }
 
 .hero h1 {
   font-family: var(--fonte-titulo);
-  font-size: 3.5rem;
-  margin-bottom: 1rem;
+  font-size: 3.75rem;
+  line-height: 1.15;
+  color: var(--cor-texto-principal);
+  margin-bottom: 1.25rem;
+}
+
+.hero h1 em {
+  font-style: italic;
+  color: var(--cor-destaque);
 }
 
 .hero p {
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: var(--cor-texto-secundario);
-  max-width: 600px;
+  max-width: 520px;
   margin: 0 auto;
+  line-height: 1.75;
 }
 
 main {
@@ -54,99 +85,13 @@ main {
   margin: 0 auto;
 }
 
-.restaurant-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, 320px);
-  justify-content: center;
-  gap: 2.5rem;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.restaurant-card {
-  background-color: var(--cor-card);
-  border-radius: 4px;
-  box-shadow: var(--sombra-card);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.restaurant-card:hover {
-  transform: translateY(-8px);
-}
-
-.card-image {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  border-radius: 10px;
-  object-fit: cover;
-  display: block;
-}
-
-.card-image-cta {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  object-fit: cover;
-  display: block;
-  margin: 1.5rem auto 0 auto;
-  border: 3px solid var(--cor-destaque);
-}
-
-.card-content {
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-}
-
-.card-content h2 {
-  font-family: var(--fonte-titulo);
-  font-size: 1.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.card-button {
-  display: block;
-  text-decoration: none;
-  background-color: transparent;
-  color: var(--cor-destaque);
-  border: 2px solid var(--cor-destaque);
-  padding: 0.75rem 1rem;
-  border-radius: 8px;
-  text-align: center;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  margin-top: auto;
-}
-
-.card-button:hover {
-  background-color: var(--cor-destaque);
-  color: #ffffff;
-}
-
-.address {
-  color: var(--cor-texto-secundario);
-  font-size: 0.85rem;
-  margin-bottom: 1rem;
-}
-
-.description {
-  margin-bottom: 1.5rem;
-  flex-grow: 1;
-  font-size: 0.95rem;
-}
-
 .filter-container {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 2.5rem;
-  margin-bottom: 4rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #eee;
+  gap: 0;
+  margin-bottom: 4.5rem;
+  border-bottom: 1px solid var(--cor-borda);
 }
 
 .filter-select-container {
@@ -157,25 +102,18 @@ main {
   font-family: var(--fonte-corpo);
   background: none;
   border: none;
-  padding: 0.25rem 0;
+  border-bottom: 2px solid transparent;
+  padding: 0.6rem 1.5rem;
+  margin-bottom: -1px;
   cursor: pointer;
-  font-size: 1rem;
-  font-weight: 500;
-  color: var(--cor-texto-secundario);
-  transition: all 0.3s ease;
-  position: relative;
-}
-
-.filter-btn::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background-color: var(--cor-destaque);
-  transform: scaleX(0);
-  transition: transform 0.3s ease;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cor-texto-terciario);
+  transition:
+    color var(--transicao),
+    border-color var(--transicao);
 }
 
 .filter-btn:hover {
@@ -184,14 +122,198 @@ main {
 
 .filter-btn.active {
   color: var(--cor-destaque);
-  font-weight: 700;
+  border-bottom-color: var(--cor-destaque);
 }
 
-.filter-btn.active::after {
+.restaurant-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.restaurant-card {
+  background-color: var(--cor-card);
+  border-radius: var(--radius-card);
+  border: 1px solid var(--cor-borda);
+  box-shadow: var(--sombra-card);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition:
+    box-shadow var(--transicao),
+    border-color var(--transicao);
+  position: relative;
+}
+
+.restaurant-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: var(--cor-destaque);
+  transform: scaleX(0);
+  transition: transform var(--transicao);
+  transform-origin: left;
+}
+
+.restaurant-card:hover {
+  box-shadow: var(--sombra-card-hover);
+  border-color: #ddd4cc;
+}
+
+.restaurant-card:hover::before {
   transform: scaleX(1);
 }
 
+.card-image-wrapper {
+  overflow: hidden;
+}
+
+.card-image {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.restaurant-card:hover .card-image {
+  transform: scale(1.03);
+}
+
+.card-image-cta {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  margin: 1.5rem auto 0;
+  border: 2px solid var(--cor-borda);
+  outline: 4px solid var(--cor-fundo);
+}
+
+.card-content {
+  padding: 1.25rem 1.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  gap: 0;
+}
+
+.card-tag {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--cor-destaque);
+  background-color: var(--cor-destaque-suave);
+  padding: 0.2rem 0.6rem;
+  border-radius: 2px;
+  margin-bottom: 0.75rem;
+}
+
+.card-content h2 {
+  font-family: var(--fonte-titulo);
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--cor-texto-principal);
+  margin-bottom: 0.4rem;
+}
+
+.address {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.35rem;
+  color: var(--cor-texto-terciario);
+  font-size: 0.8rem;
+  margin-bottom: 0.875rem;
+  line-height: 1.4;
+}
+
+.address::before {
+  content: "↗";
+  font-size: 0.7rem;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.description {
+  color: var(--cor-texto-secundario);
+  font-size: 0.875rem;
+  line-height: 1.65;
+  flex-grow: 1;
+  margin-bottom: 1.25rem;
+}
+
+.card-divider {
+  width: 100%;
+  height: 1px;
+  background-color: var(--cor-borda);
+  margin-bottom: 1.25rem;
+}
+
+.card-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  background-color: transparent;
+  color: var(--cor-destaque);
+  border: 1px solid var(--cor-destaque);
+  padding: 0.65rem 1.25rem;
+  border-radius: var(--radius-btn);
+  text-align: center;
+  font-family: var(--fonte-corpo);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition:
+    background-color var(--transicao),
+    color var(--transicao);
+}
+
+.card-button::after {
+  content: "→";
+  font-size: 0.85rem;
+  transition: transform var(--transicao);
+}
+
+.card-button:hover {
+  background-color: var(--cor-destaque);
+  color: #ffffff;
+}
+
+.card-button:hover::after {
+  transform: translateX(3px);
+}
+
+footer {
+  text-align: center;
+  padding: 3.5rem 1rem;
+  margin-top: 6rem;
+  border-top: 1px solid var(--cor-borda);
+  color: var(--cor-texto-terciario);
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+}
+
 @media (max-width: 768px) {
+  .hero {
+    padding: 5rem 1.5rem 4rem;
+  }
+
+  .hero h1 {
+    font-size: 2.75rem;
+  }
+
   .filter-container {
     border-bottom: none;
     margin-bottom: 2rem;
@@ -213,45 +335,36 @@ main {
   .filter-select {
     width: 100%;
     padding: 0.8rem 1rem;
-    font-size: 1rem;
+    font-size: 0.875rem;
     font-family: var(--fonte-corpo);
     color: var(--cor-texto-principal);
     background-color: var(--cor-card);
-    border: 1px solid #eee;
-    border-radius: 8px;
+    border: 1px solid var(--cor-borda);
+    border-radius: 4px;
     -webkit-appearance: none;
     appearance: none;
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23a8978f' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
     background-repeat: no-repeat;
     background-position: right 1rem center;
     background-size: 1em;
   }
-}
 
-footer {
-  text-align: center;
-  padding: 3rem 1rem;
-  margin-top: 6rem;
-  background-color: transparent;
-  color: var(--cor-texto-secundario);
-  font-size: 0.9rem;
-}
-
-@media (max-width: 768px) {
-  .hero h1 {
-    font-size: 2.8rem;
-  }
-  .hero p {
-    font-size: 1rem;
+  .restaurant-grid {
+    gap: 1.5rem;
   }
 }
 
 @media (max-width: 480px) {
   main {
     width: 100%;
-    padding: 0 1.5rem;
+    padding: 0 1.25rem;
   }
+
   .restaurant-grid {
     grid-template-columns: 1fr;
+  }
+
+  .hero h1 {
+    font-size: 2.25rem;
   }
 }
