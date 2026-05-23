@@ -7,7 +7,8 @@ export const ProfileCard: React.FC = () => {
       <div className="card-content">
         <h2>Me acompanhe no Instagram</h2>
         <p className="description">
-          No meu perfil você acompanha meu lifestyle e mais dicas de vivências e restaurantes em São Paulo.
+          No meu perfil você acompanha meu lifestyle e mais dicas de lugares e
+          restaurantes para visitar em São Paulo.
         </p>
         <a 
           href="https://www.instagram.com/dinamite011/" 
