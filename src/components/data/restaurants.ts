@@ -31,5 +31,4 @@ export const restaurantsData: Restaurant[] = [
       "Uma experiência que te leva direto para o Japão estando em São Paulo, autêntico sabor do lamen suíno.",
     instagramUrl: "https://www.instagram.com/aska_lamen/",
   },
-  // Pode continuar colando os outros aqui seguindo o mesmo padrão...
 ];
