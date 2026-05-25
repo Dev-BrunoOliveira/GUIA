@@ -14,6 +14,7 @@ const CATEGORIES = [
   { label: "Culinária Nordestina", value: "Culinária Nordestina" },
   { label: "Culinária Chinesa", value: "Culinária Chinesa" },
   { label: "Churrasco Coreano", value: "Churrasco Coreano" },
+  { label: "Culinária Italiana", value: "Culinária Italiana" }, 
 ];
 
 export default function App() {
