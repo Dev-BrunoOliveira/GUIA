@@ -108,5 +108,14 @@ export const restaurantsData: Restaurant[] = [
     address: 'R. Conselheiro Furtado, 668 - Liberdade, São Paulo - SP',
     description: 'Uma ótima opção para comer bem e gastar pouco. A comida é muito saborosa e o valor é bem acessível.',
     instagramUrl: 'https://www.instagram.com/luckyrestaurante/'
+  },
+  {
+    id: 'pecatto',
+    name: 'Pecatto',
+    category: 'Culinária Italiana',
+    image: './IMG/PECATTO/Parmegiana.jpg',
+    address: 'R. Francisco Marengo, 1845 - Tatuapé, São Paulo - SP',
+    description: 'Uma excelente opção para saborear pratos italianos autênticos. O ambiente é agradável e o serviço é impecável.',
+    instagramUrl: 'https://www.instagram.com/pecattosp/'
   }
 ];
