@@ -117,5 +117,15 @@ export const restaurantsData: Restaurant[] = [
     address: 'R. Francisco Marengo, 1845 - Tatuapé, São Paulo - SP',
     description: 'Uma excelente opção para saborear pratos italianos autênticos. O ambiente é agradável e o serviço é impecável.',
     instagramUrl: 'https://www.instagram.com/pecattosp/'
+  },
+  {
+    id: 'suramu',
+    name: 'Suramu',
+    category: 'Culinária Japonesa',
+    image: './IMG/SURAMU/Suramu.jpg',
+    address: 'Você pode realizar o seu pedido pelo iFood.',
+    description: 'Um menção honrosa para o Suramu, um restaurante de comida japonesa que não tem um endereço físico, mas entrega pratos incríveis pelo iFood. Eles tem o diferencial de não usar Salmão.',
+    instagramUrl: 'https://www.instagram.com/suramu_sushi/'
   }
+    
 ];
