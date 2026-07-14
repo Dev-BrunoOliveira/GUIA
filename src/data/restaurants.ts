@@ -126,6 +126,15 @@ export const restaurantsData: Restaurant[] = [
     address: 'Você pode realizar o seu pedido pelo iFood.',
     description: 'Um menção honrosa para o Suramu, um restaurante de comida japonesa que não tem um endereço físico, mas entrega pratos incríveis pelo iFood. Eles tem o diferencial de não usar Salmão.',
     instagramUrl: 'https://www.instagram.com/suramu_sushi/'
+  },
+   {
+    id: 'thaiesan',
+    name: 'Thaiesan',
+    category: 'Culinária Tailandesa',
+    image: './IMG/THAIESAN/ArrozNoAbacaxi.jpg',
+    address: 'Rua Barão de Iguape 373 Liberdade, São Paulo - SP',
+    description: 'Um lugar aonde você pode conhecer pratos tailandeses. O ambiente é agradável, porem pequeno va sem pressa e o serviço é impecável.',
+    instagramUrl: 'https://www.instagram.com/thaiesan_br/'
   }
     
 ];
