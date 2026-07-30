@@ -1,18 +1,37 @@
-import { useState, useRef, useEffect, useMemo } from "react";
+import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { restaurantsData } from "./data/restaurants";
+import type { Restaurant } from "./types";
 import { RestaurantCard } from "./components/RestaurantCard";
 import { ProfileCard } from "./components/ProfileCard";
 import { SearchBar } from "./components/SearchBar";
 import { EmptyState } from "./components/EmptyState";
 import { ThemeToggle } from "./components/ThemeToggle";
+import { RestaurantModal } from "./components/RestaurantModal";
+import { StatsBanner } from "./components/StatsBanner";
+import { Toast } from "./components/Toast";
 
 export default function App() {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [activeNeighborhood, setActiveNeighborhood] = useState<string>("all");
+  const [priceFilter, setPriceFilter] = useState<string>("all");
   const [sortBy, setSortBy] = useState<"default" | "rating" | "name">("default");
   
-  // Theme management with localStorage persistence
+  
+  const [selectedRestaurant, setSelectedRestaurant] = useState<Restaurant | null>(null);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  
+  const [favorites, setFavorites] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem("guia_favorites");
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+ 
   const [theme, setTheme] = useState<"light" | "dark">(() => {
     const savedTheme = localStorage.getItem("guia_theme");
     if (savedTheme === "dark" || savedTheme === "light") {
@@ -28,11 +47,34 @@ export default function App() {
     localStorage.setItem("guia_theme", theme);
   }, [theme]);
 
-  const toggleTheme = () => {
-    setTheme((prev) => (prev === "light" ? "dark" : "light"));
-  };
+  useEffect(() => {
+    localStorage.setItem("guia_favorites", JSON.stringify(favorites));
+  }, [favorites]);
 
-  // Derive dynamic categories with counts
+  const showToast = useCallback((msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => {
+      setToastMessage(null);
+    }, 3200);
+  }, []);
+
+  const toggleTheme = useCallback(() => {
+    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+  }, []);
+
+  const toggleFavorite = useCallback((id: string) => {
+    setFavorites((prev) => {
+      const isFav = prev.includes(id);
+      const updated = isFav ? prev.filter((item) => item !== id) : [...prev, id];
+      const targetResto = restaurantsData.find((r) => r.id === id);
+      const name = targetResto ? targetResto.name : "Restaurante";
+      
+      showToast(isFav ? `${name} removido dos favoritos` : `❤️ ${name} salvo nos favoritos!`);
+      return updated;
+    });
+  }, [showToast]);
+
+  
   const categoriesWithCount = useMemo(() => {
     const counts: Record<string, number> = {};
     restaurantsData.forEach((r) => {
@@ -49,11 +91,12 @@ export default function App() {
 
     return [
       { label: "Todos", value: "all", count: restaurantsData.length },
+      { label: "Favoritos ❤️", value: "favorites", count: favorites.length },
       ...categoryList,
     ];
-  }, []);
+  }, [favorites]);
 
-  // Derive dynamic neighborhoods
+ 
   const neighborhoods = useMemo(() => {
     const list = Array.from(
       new Set(restaurantsData.map((r) => r.neighborhood).filter(Boolean))
@@ -61,18 +104,27 @@ export default function App() {
     return ["all", ...list.sort()];
   }, []);
 
-  // Filter & sort logic
+  
   const filteredRestaurants = useMemo(() => {
     let result = restaurantsData.filter((restaurant) => {
-      // Category match
-      const matchCategory =
-        activeCategory === "all" || restaurant.category === activeCategory;
+     
+      if (activeCategory === "favorites") {
+        if (!favorites.includes(restaurant.id)) return false;
+      } else if (activeCategory !== "all" && restaurant.category !== activeCategory) {
+        return false;
+      }
 
-      // Neighborhood match
-      const matchNeighborhood =
-        activeNeighborhood === "all" || restaurant.neighborhood === activeNeighborhood;
+     
+      if (activeNeighborhood !== "all" && restaurant.neighborhood !== activeNeighborhood) {
+        return false;
+      }
 
-      // Search term match (name, description, neighborhood, highlights, category)
+  
+      if (priceFilter !== "all" && restaurant.priceRange !== priceFilter) {
+        return false;
+      }
+
+     
       const term = searchTerm.toLowerCase().trim();
       const matchSearch =
         !term ||
@@ -84,7 +136,7 @@ export default function App() {
         (restaurant.highlights &&
           restaurant.highlights.some((h) => h.toLowerCase().includes(term)));
 
-      return matchCategory && matchNeighborhood && matchSearch;
+      return matchSearch;
     });
 
     // Sorting
@@ -95,21 +147,9 @@ export default function App() {
     }
 
     return result;
-  }, [activeCategory, activeNeighborhood, searchTerm, sortBy]);
+  }, [activeCategory, activeNeighborhood, priceFilter, searchTerm, sortBy, favorites]);
 
-  const handleCategoryChange = (categoryValue: string) => {
-    setActiveCategory(categoryValue);
-    scrollToGrid();
-  };
-
-  const handleResetFilters = () => {
-    setSearchTerm("");
-    setActiveCategory("all");
-    setActiveNeighborhood("all");
-    setSortBy("default");
-  };
-
-  const scrollToGrid = () => {
+  const scrollToGrid = useCallback(() => {
     const isMobile = window.matchMedia("(max-width: 768px)").matches;
     if (isMobile && gridRef.current) {
       const headerOffset = 80;
@@ -120,10 +160,54 @@ export default function App() {
         behavior: "smooth",
       });
     }
-  };
+  }, []);
+
+  const handleCategoryChange = useCallback((categoryValue: string) => {
+    setActiveCategory(categoryValue);
+    scrollToGrid();
+  }, [scrollToGrid]);
+
+  const handleResetFilters = useCallback(() => {
+    setSearchTerm("");
+    setActiveCategory("all");
+    setActiveNeighborhood("all");
+    setPriceFilter("all");
+    setSortBy("default");
+  }, []);
+
+  const handleRandomSelect = useCallback(() => {
+    const list = filteredRestaurants.length > 0 ? filteredRestaurants : restaurantsData;
+    const randomIndex = Math.floor(Math.random() * list.length);
+    const chosen = list[randomIndex];
+    setSelectedRestaurant(chosen);
+    showToast(`🎲 Sorteado: ${chosen.name}!`);
+  }, [filteredRestaurants, showToast]);
+
+  const handleShare = useCallback((restaurant: Restaurant) => {
+    if (navigator.share) {
+      navigator.share({
+        title: restaurant.name,
+        text: `Confira ${restaurant.name} no Guia de Restaurantes!`,
+        url: window.location.href,
+      }).catch(() => {});
+    } else {
+      navigator.clipboard.writeText(`${restaurant.name} - ${restaurant.address}`);
+      showToast(`Link de ${restaurant.name} copiado para a área de transferência!`);
+    }
+  }, [showToast]);
+
+  const handleCloseModal = useCallback(() => {
+    setSelectedRestaurant(null);
+  }, []);
+
+  const handleCloseToast = useCallback(() => {
+    setToastMessage(null);
+  }, []);
 
   return (
     <div className="app-container">
+      <Toast message={toastMessage} onClose={handleCloseToast} />
+
       <header className="hero">
         <div className="hero-top-bar">
           <span className="hero-eyebrow">Gastronomia em SP</span>
@@ -137,27 +221,30 @@ export default function App() {
           <p>
             Recomendações pessoais de experiências gastronômicas incríveis em São Paulo.
           </p>
+
+          <StatsBanner restaurants={restaurantsData} />
         </div>
       </header>
 
       <main>
-        {/* Search Bar */}
+        {}
         <section className="search-section">
           <SearchBar
             value={searchTerm}
             onChange={setSearchTerm}
             resultCount={filteredRestaurants.length}
+            onRandomSelect={handleRandomSelect}
           />
         </section>
 
-        {/* Filters and Controls */}
+        {}
         <section className="controls-section">
-          {/* Desktop & Mobile Scrollable Category Chips */}
+          {}
           <div className="category-scroll-container">
             {categoriesWithCount.map((cat) => (
               <button
                 key={cat.value}
-                className={`filter-btn ${activeCategory === cat.value ? "active" : ""}`}
+                className={`filter-btn ${activeCategory === cat.value ? "active" : ""} ${cat.value === "favorites" ? "fav-tab" : ""}`}
                 onClick={() => handleCategoryChange(cat.value)}
               >
                 <span>{cat.label}</span>
@@ -166,7 +253,7 @@ export default function App() {
             ))}
           </div>
 
-          {/* Secondary Controls (Neighborhood & Sorting) */}
+          {}
           <div className="secondary-filters">
             <div className="select-group">
               <label htmlFor="neighborhood-select">Bairro:</label>
@@ -188,7 +275,22 @@ export default function App() {
             </div>
 
             <div className="select-group">
-              <label htmlFor="sort-select">Ordenar por:</label>
+              <label htmlFor="price-select">Preço:</label>
+              <select
+                id="price-select"
+                className="custom-select"
+                value={priceFilter}
+                onChange={(e) => setPriceFilter(e.target.value)}
+              >
+                <option value="all">Qualquer Preço</option>
+                <option value="$">$ (Econômico)</option>
+                <option value="$$">$$ (Moderado)</option>
+                <option value="$$$">$$$ (Sofisticado)</option>
+              </select>
+            </div>
+
+            <div className="select-group">
+              <label htmlFor="sort-select">Ordenar:</label>
               <select
                 id="sort-select"
                 className="custom-select"
@@ -205,12 +307,18 @@ export default function App() {
           </div>
         </section>
 
-        {/* Restaurant Grid or Empty State */}
+        {}
         <section className="grid-section" ref={gridRef}>
           {filteredRestaurants.length > 0 ? (
             <div className="restaurant-grid">
               {filteredRestaurants.map((restaurant) => (
-                <RestaurantCard key={restaurant.id} restaurant={restaurant} />
+                <RestaurantCard
+                  key={restaurant.id}
+                  restaurant={restaurant}
+                  isFavorite={favorites.includes(restaurant.id)}
+                  onToggleFavorite={toggleFavorite}
+                  onSelect={setSelectedRestaurant}
+                />
               ))}
               <ProfileCard />
             </div>
@@ -220,10 +328,19 @@ export default function App() {
         </section>
       </main>
 
+      {}
+      <RestaurantModal
+        restaurant={selectedRestaurant}
+        isFavorite={selectedRestaurant ? favorites.includes(selectedRestaurant.id) : false}
+        onToggleFavorite={toggleFavorite}
+        onClose={handleCloseModal}
+        onShare={handleShare}
+      />
+
       <footer>
         <div className="footer-content">
           <p>
-            &copy; {new Date().getFullYear()} - <strong>Meu Guia de Restaurantes</strong>, criado com ❤️ por Bruno Oliveira.
+            &copy; {new Date().getFullYear()} - <strong>Meu Guia de Restaurantes</strong>, criado por Bruno Oliveira.
           </p>
           <a
             href="https://www.instagram.com/dinamite011/"
