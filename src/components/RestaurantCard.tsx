@@ -3,15 +3,11 @@ import type { Restaurant } from "../types";
 
 interface RestaurantCardProps {
   restaurant: Restaurant;
-  isFavorite: boolean;
-  onToggleFavorite: (id: string) => void;
   onSelect: (restaurant: Restaurant) => void;
 }
 
 const RestaurantCardComponent: React.FC<RestaurantCardProps> = ({
   restaurant,
-  isFavorite,
-  onToggleFavorite,
   onSelect,
 }) => {
   return (
@@ -36,18 +32,6 @@ const RestaurantCardComponent: React.FC<RestaurantCardProps> = ({
             </span>
           )}
         </div>
-
-        <button
-          className={`card-heart-btn ${isFavorite ? "favorite" : ""}`}
-          onClick={(e) => {
-            e.stopPropagation();
-            onToggleFavorite(restaurant.id);
-          }}
-          title={isFavorite ? "Remover dos Favoritos" : "Salvar nos Favoritos"}
-          aria-label="Favoritar restaurante"
-        >
-          {isFavorite ? "❤️" : "🤍"}
-        </button>
       </div>
 
       <div className="card-content">
@@ -108,8 +92,5 @@ const RestaurantCardComponent: React.FC<RestaurantCardProps> = ({
 };
 
 export const RestaurantCard = memo(RestaurantCardComponent, (prevProps, nextProps) => {
-  return (
-    prevProps.restaurant.id === nextProps.restaurant.id &&
-    prevProps.isFavorite === nextProps.isFavorite
-  );
+  return prevProps.restaurant.id === nextProps.restaurant.id;
 });

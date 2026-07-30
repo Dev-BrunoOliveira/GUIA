@@ -3,16 +3,12 @@ import type { Restaurant } from "../types";
 
 interface RestaurantModalProps {
   restaurant: Restaurant | null;
-  isFavorite: boolean;
-  onToggleFavorite: (id: string) => void;
   onClose: () => void;
   onShare: (restaurant: Restaurant) => void;
 }
 
 export const RestaurantModal: React.FC<RestaurantModalProps> = ({
   restaurant,
-  isFavorite,
-  onToggleFavorite,
   onClose,
   onShare,
 }) => {
@@ -54,14 +50,6 @@ export const RestaurantModal: React.FC<RestaurantModalProps> = ({
         <div className="modal-header-image">
           <img src={restaurant.image} alt={restaurant.name} />
           <div className="modal-image-overlay" />
-          
-          <button
-            className={`modal-favorite-btn ${isFavorite ? "active" : ""}`}
-            onClick={() => onToggleFavorite(restaurant.id)}
-            title={isFavorite ? "Remover dos Favoritos" : "Adicionar aos Favoritos"}
-          >
-            {isFavorite ? "❤️ Favoritado" : "🤍 Favoritar"}
-          </button>
 
           <div className="modal-badges">
             {restaurant.rating && (

@@ -17,21 +17,12 @@ export default function App() {
   const [priceFilter, setPriceFilter] = useState<string>("all");
   const [sortBy, setSortBy] = useState<"default" | "rating" | "name">("default");
   
-  
+  // Modal, Toast & Randomizer states
   const [selectedRestaurant, setSelectedRestaurant] = useState<Restaurant | null>(null);
+  const [isShuffling, setIsShuffling] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  
-  const [favorites, setFavorites] = useState<string[]>(() => {
-    try {
-      const saved = localStorage.getItem("guia_favorites");
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
-
- 
+  // Theme management with localStorage
   const [theme, setTheme] = useState<"light" | "dark">(() => {
     const savedTheme = localStorage.getItem("guia_theme");
     if (savedTheme === "dark" || savedTheme === "light") {
@@ -47,10 +38,6 @@ export default function App() {
     localStorage.setItem("guia_theme", theme);
   }, [theme]);
 
-  useEffect(() => {
-    localStorage.setItem("guia_favorites", JSON.stringify(favorites));
-  }, [favorites]);
-
   const showToast = useCallback((msg: string) => {
     setToastMessage(msg);
     setTimeout(() => {
@@ -62,19 +49,7 @@ export default function App() {
     setTheme((prev) => (prev === "light" ? "dark" : "light"));
   }, []);
 
-  const toggleFavorite = useCallback((id: string) => {
-    setFavorites((prev) => {
-      const isFav = prev.includes(id);
-      const updated = isFav ? prev.filter((item) => item !== id) : [...prev, id];
-      const targetResto = restaurantsData.find((r) => r.id === id);
-      const name = targetResto ? targetResto.name : "Restaurante";
-      
-      showToast(isFav ? `${name} removido dos favoritos` : `❤️ ${name} salvo nos favoritos!`);
-      return updated;
-    });
-  }, [showToast]);
-
-  
+  // Derive dynamic categories with counts
   const categoriesWithCount = useMemo(() => {
     const counts: Record<string, number> = {};
     restaurantsData.forEach((r) => {
@@ -91,12 +66,11 @@ export default function App() {
 
     return [
       { label: "Todos", value: "all", count: restaurantsData.length },
-      { label: "Favoritos ❤️", value: "favorites", count: favorites.length },
       ...categoryList,
     ];
-  }, [favorites]);
+  }, []);
 
- 
+  // Derive dynamic neighborhoods
   const neighborhoods = useMemo(() => {
     const list = Array.from(
       new Set(restaurantsData.map((r) => r.neighborhood).filter(Boolean))
@@ -104,27 +78,25 @@ export default function App() {
     return ["all", ...list.sort()];
   }, []);
 
-  
+  // Filter & sort logic
   const filteredRestaurants = useMemo(() => {
     let result = restaurantsData.filter((restaurant) => {
-     
-      if (activeCategory === "favorites") {
-        if (!favorites.includes(restaurant.id)) return false;
-      } else if (activeCategory !== "all" && restaurant.category !== activeCategory) {
+      // Category match
+      if (activeCategory !== "all" && restaurant.category !== activeCategory) {
         return false;
       }
 
-     
+      // Neighborhood match
       if (activeNeighborhood !== "all" && restaurant.neighborhood !== activeNeighborhood) {
         return false;
       }
 
-  
+      // Price range match
       if (priceFilter !== "all" && restaurant.priceRange !== priceFilter) {
         return false;
       }
 
-     
+      // Search term match
       const term = searchTerm.toLowerCase().trim();
       const matchSearch =
         !term ||
@@ -147,7 +119,7 @@ export default function App() {
     }
 
     return result;
-  }, [activeCategory, activeNeighborhood, priceFilter, searchTerm, sortBy, favorites]);
+  }, [activeCategory, activeNeighborhood, priceFilter, searchTerm, sortBy]);
 
   const scrollToGrid = useCallback(() => {
     const isMobile = window.matchMedia("(max-width: 768px)").matches;
@@ -176,11 +148,18 @@ export default function App() {
   }, []);
 
   const handleRandomSelect = useCallback(() => {
-    const list = filteredRestaurants.length > 0 ? filteredRestaurants : restaurantsData;
-    const randomIndex = Math.floor(Math.random() * list.length);
-    const chosen = list[randomIndex];
-    setSelectedRestaurant(chosen);
-    showToast(`🎲 Sorteado: ${chosen.name}!`);
+    const pool = filteredRestaurants.length > 0 ? filteredRestaurants : restaurantsData;
+    if (pool.length === 0) return;
+
+    setIsShuffling(true);
+
+    setTimeout(() => {
+      const randomIndex = Math.floor(Math.random() * pool.length);
+      const winner = pool[randomIndex];
+      setSelectedRestaurant(winner);
+      setIsShuffling(false);
+      showToast(`🎲 Sorteamos para você: ${winner.name}!`);
+    }, 500);
   }, [filteredRestaurants, showToast]);
 
   const handleShare = useCallback((restaurant: Restaurant) => {
@@ -227,24 +206,25 @@ export default function App() {
       </header>
 
       <main>
-        {}
+        {/* Search Bar & Randomizer button */}
         <section className="search-section">
           <SearchBar
             value={searchTerm}
             onChange={setSearchTerm}
             resultCount={filteredRestaurants.length}
             onRandomSelect={handleRandomSelect}
+            isShuffling={isShuffling}
           />
         </section>
 
-        {}
+        {/* Filters and Controls */}
         <section className="controls-section">
-          {}
+          {/* Scrollable Category Chips */}
           <div className="category-scroll-container">
             {categoriesWithCount.map((cat) => (
               <button
                 key={cat.value}
-                className={`filter-btn ${activeCategory === cat.value ? "active" : ""} ${cat.value === "favorites" ? "fav-tab" : ""}`}
+                className={`filter-btn ${activeCategory === cat.value ? "active" : ""}`}
                 onClick={() => handleCategoryChange(cat.value)}
               >
                 <span>{cat.label}</span>
@@ -253,7 +233,7 @@ export default function App() {
             ))}
           </div>
 
-          {}
+          {/* Secondary Controls (Neighborhood, Price, Sorting) */}
           <div className="secondary-filters">
             <div className="select-group">
               <label htmlFor="neighborhood-select">Bairro:</label>
@@ -307,7 +287,7 @@ export default function App() {
           </div>
         </section>
 
-        {}
+        {/* Restaurant Grid or Empty State */}
         <section className="grid-section" ref={gridRef}>
           {filteredRestaurants.length > 0 ? (
             <div className="restaurant-grid">
@@ -315,8 +295,6 @@ export default function App() {
                 <RestaurantCard
                   key={restaurant.id}
                   restaurant={restaurant}
-                  isFavorite={favorites.includes(restaurant.id)}
-                  onToggleFavorite={toggleFavorite}
                   onSelect={setSelectedRestaurant}
                 />
               ))}
@@ -328,11 +306,9 @@ export default function App() {
         </section>
       </main>
 
-      {}
+      {/* Restaurant Detail Modal */}
       <RestaurantModal
         restaurant={selectedRestaurant}
-        isFavorite={selectedRestaurant ? favorites.includes(selectedRestaurant.id) : false}
-        onToggleFavorite={toggleFavorite}
         onClose={handleCloseModal}
         onShare={handleShare}
       />
@@ -340,7 +316,7 @@ export default function App() {
       <footer>
         <div className="footer-content">
           <p>
-            &copy; {new Date().getFullYear()} - <strong>Meu Guia de Restaurantes</strong>, criado por Bruno Oliveira.
+            &copy; {new Date().getFullYear()} - <strong>Meu Guia de Restaurantes</strong>, criado com ❤️ por Bruno Oliveira.
           </p>
           <a
             href="https://www.instagram.com/dinamite011/"

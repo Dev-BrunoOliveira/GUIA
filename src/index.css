@@ -213,7 +213,7 @@ main {
   flex: 1;
 }
 
-/* Search Bar & Randomizer */
+/* Search Bar & Randomizer Button */
 .search-section {
   margin-bottom: 2rem;
 }
@@ -289,25 +289,60 @@ main {
 .random-pick-btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  background-color: var(--cor-destaque);
+  gap: 0.5rem;
+  background: linear-gradient(135deg, var(--cor-destaque) 0%, #d97736 100%);
   color: #ffffff;
   border: none;
-  padding: 0.95rem 1.25rem;
+  padding: 0.95rem 1.35rem;
   border-radius: 30px;
   font-family: var(--fonte-corpo);
   font-size: 0.85rem;
   font-weight: 700;
   cursor: pointer;
   white-space: nowrap;
-  box-shadow: 0 4px 12px rgba(160, 82, 45, 0.2);
-  transition: transform var(--transicao), background-color var(--transicao), box-shadow var(--transicao);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(160, 82, 45, 0.25);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: glowPulse 3s infinite ease-in-out;
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    box-shadow: 0 4px 14px rgba(160, 82, 45, 0.25);
+  }
+  50% {
+    box-shadow: 0 6px 20px rgba(217, 119, 54, 0.45);
+  }
 }
 
 .random-pick-btn:hover {
-  background-color: var(--cor-destaque-hover);
-  transform: translateY(-1.5px);
-  box-shadow: 0 6px 16px rgba(160, 82, 45, 0.3);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 24px rgba(160, 82, 45, 0.4);
+}
+
+.random-pick-btn.shuffling {
+  background: linear-gradient(135deg, #d97736 0%, #e63946 100%);
+  opacity: 0.95;
+}
+
+.dice-icon {
+  display: inline-block;
+  font-size: 1.1rem;
+  transition: transform 0.3s ease;
+}
+
+.dice-icon.spinning {
+  animation: spinDice 0.3s linear infinite;
+}
+
+@keyframes spinDice {
+  from {
+    transform: rotate(0deg) scale(1.2);
+  }
+  to {
+    transform: rotate(360deg) scale(1.2);
+  }
 }
 
 .search-results-counter {
@@ -497,34 +532,6 @@ main {
   font-weight: 700;
   padding: 0.25rem 0.55rem;
   border-radius: 20px;
-}
-
-.card-heart-btn {
-  position: absolute;
-  top: 0.75rem;
-  left: 0.75rem;
-  background-color: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(4px);
-  border: none;
-  border-radius: 50%;
-  width: 34px;
-  height: 34px;
-  font-size: 0.95rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s ease;
-}
-
-.card-heart-btn:hover {
-  transform: scale(1.12);
-  background-color: #ffffff;
-}
-
-.card-heart-btn.favorite {
-  background-color: #ffffff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
 }
 
 .card-content {
