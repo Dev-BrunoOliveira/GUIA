@@ -5,5 +5,11 @@ export interface Restaurant {
   description: string;
   image: string;
   instagramUrl: string;
-  category?: string; 
-}
+  category?: string;
+  rating?: number;
+  priceRange?: '$' | '$$' | '$$$' | '$$$$';
+  neighborhood?: string;
+  googleMapsUrl?: string;
+  highlights?: string[];
+  features?: string[];
+}
