@@ -49,7 +49,9 @@ body {
   line-height: 1.7;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transition: background-color var(--transicao), color var(--transicao);
+  transition:
+    background-color var(--transicao),
+    color var(--transicao);
 }
 
 .app-container {
@@ -58,7 +60,6 @@ body {
   flex-direction: column;
 }
 
-/* Toast Notifications */
 .toast-notification {
   position: fixed;
   bottom: 2rem;
@@ -98,7 +99,6 @@ body {
   }
 }
 
-/* Hero & Header */
 .hero {
   text-align: center;
   padding: 3rem 1.5rem 2rem;
@@ -164,7 +164,6 @@ body {
   line-height: 1.6;
 }
 
-/* Stats Banner */
 .stats-banner {
   display: inline-flex;
   align-items: center;
@@ -213,7 +212,6 @@ main {
   flex: 1;
 }
 
-/* Search Bar & Randomizer Button */
 .search-section {
   margin-bottom: 2rem;
 }
@@ -260,7 +258,9 @@ main {
   border-radius: 30px;
   outline: none;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
-  transition: border-color var(--transicao), box-shadow var(--transicao);
+  transition:
+    border-color var(--transicao),
+    box-shadow var(--transicao);
 }
 
 .search-input:focus {
@@ -303,12 +303,15 @@ main {
   position: relative;
   overflow: hidden;
   box-shadow: 0 4px 14px rgba(160, 82, 45, 0.25);
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition:
+    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   animation: glowPulse 3s infinite ease-in-out;
 }
 
 @keyframes glowPulse {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 4px 14px rgba(160, 82, 45, 0.25);
   }
   50% {
@@ -351,7 +354,6 @@ main {
   color: var(--cor-texto-terciario);
 }
 
-/* Filters & Scroll Chips */
 .controls-section {
   margin-bottom: 2.5rem;
   display: flex;
@@ -479,7 +481,10 @@ main {
   flex-direction: column;
   cursor: pointer;
   will-change: transform;
-  transition: transform var(--transicao-suave), box-shadow var(--transicao-suave), border-color var(--transicao-suave);
+  transition:
+    transform var(--transicao-suave),
+    box-shadow var(--transicao-suave),
+    border-color var(--transicao-suave);
 }
 
 .restaurant-card:hover {
@@ -590,7 +595,6 @@ main {
   margin-bottom: 1rem;
 }
 
-/* Highlights */
 .card-highlights {
   margin-bottom: 1rem;
   padding: 0.6rem;
@@ -638,7 +642,6 @@ main {
   margin-top: auto;
 }
 
-/* Actions */
 .card-actions {
   display: flex;
   gap: 0.5rem;
@@ -682,7 +685,6 @@ main {
   color: var(--cor-destaque);
 }
 
-/* Profile Card CTA - Max Prominence Photo Format */
 .cta-card {
   cursor: default;
 }
@@ -708,7 +710,6 @@ main {
   font-size: 0.8rem;
 }
 
-/* Modal View */
 .modal-backdrop {
   position: fixed;
   inset: 0;
@@ -773,7 +774,7 @@ main {
 .modal-image-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, transparent 60%);
 }
 
 .modal-favorite-btn {
@@ -942,8 +943,12 @@ main {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes modalScale {
@@ -957,7 +962,6 @@ main {
   }
 }
 
-/* Empty State */
 .empty-state {
   text-align: center;
   padding: 4rem 1.5rem;
@@ -1002,7 +1006,6 @@ main {
   background-color: var(--cor-destaque-hover);
 }
 
-/* Footer */
 footer {
   text-align: center;
   padding: 2.5rem 1rem;
@@ -1030,7 +1033,6 @@ footer {
   text-decoration: underline;
 }
 
-/* Responsive Breakpoints */
 @media (max-width: 768px) {
   .hero-content h1 {
     font-size: 2.35rem;
