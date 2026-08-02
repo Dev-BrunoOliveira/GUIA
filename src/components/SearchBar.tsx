@@ -3,13 +3,11 @@ import React from "react";
 interface SearchBarProps {
   value: string;
   onChange: (value: string) => void;
-  resultCount: number;
 }
 
 export const SearchBar: React.FC<SearchBarProps> = ({
   value,
   onChange,
-  resultCount,
 }) => {
   return (
     <div className="search-bar-wrapper">
@@ -49,10 +47,6 @@ export const SearchBar: React.FC<SearchBarProps> = ({
           )}
         </div>
       </div>
-
-      <span className="search-results-counter">
-        {resultCount} {resultCount === 1 ? "restaurante encontrado" : "restaurantes encontrados"}
-      </span>
     </div>
   );
 };

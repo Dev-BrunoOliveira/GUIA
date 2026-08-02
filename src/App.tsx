@@ -7,7 +7,6 @@ import { SearchBar } from "./components/SearchBar";
 import { EmptyState } from "./components/EmptyState";
 import { ThemeToggle } from "./components/ThemeToggle";
 import { RestaurantModal } from "./components/RestaurantModal";
-import { StatsBanner } from "./components/StatsBanner";
 import { Toast } from "./components/Toast";
 
 export default function App() {
@@ -198,8 +197,6 @@ export default function App() {
             Recomendações pessoais de experiências gastronômicas incríveis em
             São Paulo.
           </p>
-
-          <StatsBanner restaurants={restaurantsData} />
         </div>
       </header>
 
@@ -209,7 +206,6 @@ export default function App() {
           <SearchBar
             value={searchTerm}
             onChange={setSearchTerm}
-            resultCount={filteredRestaurants.length}
           />
         </section>
 
