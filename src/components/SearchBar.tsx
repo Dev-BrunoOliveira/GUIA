@@ -4,16 +4,12 @@ interface SearchBarProps {
   value: string;
   onChange: (value: string) => void;
   resultCount: number;
-  onRandomSelect: () => void;
-  isShuffling?: boolean;
 }
 
 export const SearchBar: React.FC<SearchBarProps> = ({
   value,
   onChange,
   resultCount,
-  onRandomSelect,
-  isShuffling = false,
 }) => {
   return (
     <div className="search-bar-wrapper">
@@ -52,19 +48,6 @@ export const SearchBar: React.FC<SearchBarProps> = ({
             </button>
           )}
         </div>
-
-        <button
-          type="button"
-          className={`random-pick-btn ${isShuffling ? "shuffling" : ""}`}
-          onClick={onRandomSelect}
-          disabled={isShuffling}
-          title="Descubra um restaurante incrível recomendado para hoje!"
-        >
-          <span className={`dice-icon ${isShuffling ? "spinning" : ""}`}>🎲</span>
-          <span>
-            {isShuffling ? "Sorteando..." : "Descubra onde você vai comer hoje?"}
-          </span>
-        </button>
       </div>
 
       <span className="search-results-counter">

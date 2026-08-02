@@ -15,20 +15,22 @@ export default function App() {
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [activeNeighborhood, setActiveNeighborhood] = useState<string>("all");
   const [priceFilter, setPriceFilter] = useState<string>("all");
-  const [sortBy, setSortBy] = useState<"default" | "rating" | "name">("default");
-  
-  // Modal, Toast & Randomizer states
-  const [selectedRestaurant, setSelectedRestaurant] = useState<Restaurant | null>(null);
-  const [isShuffling, setIsShuffling] = useState<boolean>(false);
+  const [sortBy, setSortBy] = useState<"default" | "rating" | "name">(
+    "default",
+  );
+
+  const [selectedRestaurant, setSelectedRestaurant] =
+    useState<Restaurant | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  // Theme management with localStorage
   const [theme, setTheme] = useState<"light" | "dark">(() => {
     const savedTheme = localStorage.getItem("guia_theme");
     if (savedTheme === "dark" || savedTheme === "light") {
       return savedTheme;
     }
-    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    return window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light";
   });
 
   const gridRef = useRef<HTMLDivElement>(null);
@@ -49,7 +51,6 @@ export default function App() {
     setTheme((prev) => (prev === "light" ? "dark" : "light"));
   }, []);
 
-  // Derive dynamic categories with counts
   const categoriesWithCount = useMemo(() => {
     const counts: Record<string, number> = {};
     restaurantsData.forEach((r) => {
@@ -70,48 +71,46 @@ export default function App() {
     ];
   }, []);
 
-  // Derive dynamic neighborhoods
   const neighborhoods = useMemo(() => {
     const list = Array.from(
-      new Set(restaurantsData.map((r) => r.neighborhood).filter(Boolean))
+      new Set(restaurantsData.map((r) => r.neighborhood).filter(Boolean)),
     ) as string[];
     return ["all", ...list.sort()];
   }, []);
 
-  // Filter & sort logic
   const filteredRestaurants = useMemo(() => {
     let result = restaurantsData.filter((restaurant) => {
-      // Category match
       if (activeCategory !== "all" && restaurant.category !== activeCategory) {
         return false;
       }
 
-      // Neighborhood match
-      if (activeNeighborhood !== "all" && restaurant.neighborhood !== activeNeighborhood) {
+      if (
+        activeNeighborhood !== "all" &&
+        restaurant.neighborhood !== activeNeighborhood
+      ) {
         return false;
       }
 
-      // Price range match
       if (priceFilter !== "all" && restaurant.priceRange !== priceFilter) {
         return false;
       }
 
-      // Search term match
       const term = searchTerm.toLowerCase().trim();
       const matchSearch =
         !term ||
         restaurant.name.toLowerCase().includes(term) ||
         restaurant.description.toLowerCase().includes(term) ||
         restaurant.address.toLowerCase().includes(term) ||
-        (restaurant.category && restaurant.category.toLowerCase().includes(term)) ||
-        (restaurant.neighborhood && restaurant.neighborhood.toLowerCase().includes(term)) ||
+        (restaurant.category &&
+          restaurant.category.toLowerCase().includes(term)) ||
+        (restaurant.neighborhood &&
+          restaurant.neighborhood.toLowerCase().includes(term)) ||
         (restaurant.highlights &&
           restaurant.highlights.some((h) => h.toLowerCase().includes(term)));
 
       return matchSearch;
     });
 
-    // Sorting
     if (sortBy === "rating") {
       result = [...result].sort((a, b) => (b.rating || 0) - (a.rating || 0));
     } else if (sortBy === "name") {
@@ -134,10 +133,13 @@ export default function App() {
     }
   }, []);
 
-  const handleCategoryChange = useCallback((categoryValue: string) => {
-    setActiveCategory(categoryValue);
-    scrollToGrid();
-  }, [scrollToGrid]);
+  const handleCategoryChange = useCallback(
+    (categoryValue: string) => {
+      setActiveCategory(categoryValue);
+      scrollToGrid();
+    },
+    [scrollToGrid],
+  );
 
   const handleResetFilters = useCallback(() => {
     setSearchTerm("");
@@ -147,33 +149,28 @@ export default function App() {
     setSortBy("default");
   }, []);
 
-  const handleRandomSelect = useCallback(() => {
-    const pool = filteredRestaurants.length > 0 ? filteredRestaurants : restaurantsData;
-    if (pool.length === 0) return;
 
-    setIsShuffling(true);
-
-    setTimeout(() => {
-      const randomIndex = Math.floor(Math.random() * pool.length);
-      const winner = pool[randomIndex];
-      setSelectedRestaurant(winner);
-      setIsShuffling(false);
-      showToast(`🎲 Sorteamos para você: ${winner.name}!`);
-    }, 500);
-  }, [filteredRestaurants, showToast]);
-
-  const handleShare = useCallback((restaurant: Restaurant) => {
-    if (navigator.share) {
-      navigator.share({
-        title: restaurant.name,
-        text: `Confira ${restaurant.name} no Guia de Restaurantes!`,
-        url: window.location.href,
-      }).catch(() => {});
-    } else {
-      navigator.clipboard.writeText(`${restaurant.name} - ${restaurant.address}`);
-      showToast(`Link de ${restaurant.name} copiado para a área de transferência!`);
-    }
-  }, [showToast]);
+  const handleShare = useCallback(
+    (restaurant: Restaurant) => {
+      if (navigator.share) {
+        navigator
+          .share({
+            title: restaurant.name,
+            text: `Confira ${restaurant.name} no Guia de Restaurantes!`,
+            url: window.location.href,
+          })
+          .catch(() => {});
+      } else {
+        navigator.clipboard.writeText(
+          `${restaurant.name} - ${restaurant.address}`,
+        );
+        showToast(
+          `Link de ${restaurant.name} copiado para a área de transferência!`,
+        );
+      }
+    },
+    [showToast],
+  );
 
   const handleCloseModal = useCallback(() => {
     setSelectedRestaurant(null);
@@ -198,7 +195,8 @@ export default function App() {
             Meu Guia de <em>Restaurantes</em>
           </h1>
           <p>
-            Recomendações pessoais de experiências gastronômicas incríveis em São Paulo.
+            Recomendações pessoais de experiências gastronômicas incríveis em
+            São Paulo.
           </p>
 
           <StatsBanner restaurants={restaurantsData} />
@@ -206,14 +204,12 @@ export default function App() {
       </header>
 
       <main>
-        {/* Search Bar & Randomizer button */}
+        {/* Search Bar */}
         <section className="search-section">
           <SearchBar
             value={searchTerm}
             onChange={setSearchTerm}
             resultCount={filteredRestaurants.length}
-            onRandomSelect={handleRandomSelect}
-            isShuffling={isShuffling}
           />
         </section>
 
@@ -316,7 +312,9 @@ export default function App() {
       <footer>
         <div className="footer-content">
           <p>
-            &copy; {new Date().getFullYear()} - <strong>Meu Guia de Restaurantes</strong>, criado com ❤️ por Bruno Oliveira.
+            &copy; {new Date().getFullYear()} -{" "}
+            <strong>Meu Guia de Restaurantes</strong>, criado com ❤️ por Bruno
+            Oliveira.
           </p>
           <a
             href="https://www.instagram.com/dinamite011/"
